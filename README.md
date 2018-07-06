@@ -37,21 +37,31 @@ You do NOT need to edit the variables in the template files - the tool will do t
 You can choose between the included templates in the "templates" folder or build your own simply by duplicating an existing folder and editing the files inside. This allows you to customize the device name, the phishing contents page, or even build a totally new type of UPNP device that I haven't created yet.
 
 ```
-usage: essdp.py [-h] [-p PORT] [-t TEMPLATE] interface
+usage: essdp.py [-h] [-i IP] [-p PORT] [-t TEMPLATE] [-s SMB] [-b] [-r REALM]
+                [-u URL]
+                interface
 
 positional arguments:
   interface             Network interface to listen on.
 
 optional arguments:
   -h, --help            show this help message and exit
+  -i IP, --ip IP        IP address to listen on. Required for Mac OS.
   -p PORT, --port PORT  Port for HTTP server. Defaults to 8888.
   -t TEMPLATE, --template TEMPLATE
                         Name of a folder in the templates directory. Defaults
                         to "password-vault". This will determine xml and
-                        phishing pages used.
+                        phishing pages used."
   -s SMB, --smb SMB     IP address of your SMB server. Defalts to the primary
                         address of the "interface" provided.
-  ```
+  -b, --basic           Enable base64 authentication for templates and write
+                        credentials to creds.txt
+  -r REALM, --realm REALM
+                        Realm to appear when prompting users for
+                        authentication via base64 auth.
+  -u URL, --url URL     Add javascript to the template to redirect to the
+                        provided URL.
+```
 
 # Templates
 The following templates come with the tool. If you have good design skills, please contribute one of your own!
@@ -60,6 +70,7 @@ The following templates come with the tool. If you have good design skills, plea
 - `password-vault`: Will show up in Windows Explorer as "IT Password Vault". Phishing page contains a short list of fake passwords / ssh keys / etc.
 - `xxe-smb`: Will not likely show up in Windows Explorer. Used for finding zero day vulnerabilities in XML parsers. Will trigger an "XXE - VULN" alert in the UI for hits and will attempt to force clients to authenticate with the SMB server, with 0 interaction.
 - `xxe-exfil`: Another example of searching for XXE vulnerabilities, but this time attempting to exfiltrate a test file from a Windows host. Of course you can customize this to look for whatever specific file you are after, Windows or Linux. In the vulnerable applications I've discovered, exfiltration works only on a file with no whitepace or linebreaks. This is due to how it is injected into the URL of a GET request. If you get this working on multi-line files, PLEASE let me know how you did it.
+- `microsoft-azure`: Will appear in Windows Explorer as "Microsoft Azure Storage". Landing page is the Windows Live login page when cookies are disabled. Recommend to use with the `-u` option to redirect users to real login page.
 
 # Technical Details
 Simple Service Discovery Protocol (SSDP) is used by Operating Systems (Windows, MacOS, Linux, IOS, Android, etc) and applications (Spotify, Youtube, etc) to discover shared devices on a local network. It is the foundation for discovering and advertising Universal Plug & Play (UPNP) devices.
