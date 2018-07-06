@@ -1,6 +1,6 @@
 # Disclaimer!
 
-The original POC was demonstrated by @InitString and his project at https://gitlab.com/evil-ssdp. This project is a fork of the original POC, which adds:
+The original POC was demonstrated by @InitString and his project at https://gitlab.com/initstring/evil-ssdp. This project is a fork of the original POC, which adds:
 
 - Mac OSX Support (must pass the -i flag)
 - New template: Microsoft Azure
